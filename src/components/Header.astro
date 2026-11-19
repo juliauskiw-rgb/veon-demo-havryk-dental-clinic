@@ -1,0 +1,110 @@
+---
+// Sticky white header: logo → #hero, anchors, number + call button; 390: phone icon + burger menu.
+import { Image } from "astro:assets";
+import logo from "../assets/logo-dark.png";
+import PhoneIcon from "./PhoneIcon.astro";
+import CallButton from "./CallButton.astro";
+import { phoneMain, addresses, hoursShort } from "../data/clinic";
+const nav = [
+  { href: "#services", label: "Послуги" },
+  { href: "#kids", label: "Дітям" },
+  { href: "#team", label: "Лікарі" },
+  { href: "#prices", label: "Ціни" },
+  { href: "#contacts", label: "Адреси" },
+];
+---
+<header class="site-header" data-rec="R-002">
+  <div class="container site-header__bar">
+    <a class="site-header__logo" href="#hero" aria-label="Havryk Dental Clinic, на початок сторінки">
+      <Image src={logo} alt="Havryk Dental Clinic" width={150} height={32} loading="eager" />
+    </a>
+    <nav class="site-nav" aria-label="Головне меню">
+      <ul>
+        {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+      </ul>
+    </nav>
+    <div class="site-header__actions">
+      <a class="site-header__tel price" href={`tel:${phoneMain.tel}`}>{phoneMain.label}</a>
+      <CallButton phone={phoneMain} class="site-header__cta" showNumber={false}>Подзвонити</CallButton>
+      <a class="icon-btn icon-btn--solid site-header__tel-icon" href={`tel:${phoneMain.tel}`} aria-label={`Подзвонити ${phoneMain.label}`}><PhoneIcon /></a>
+      <button class="icon-btn site-header__burger" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Меню">
+        <span class="burger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobile-menu" hidden>
+    <div class="container">
+      <ul class="mobile-menu__nav">
+        {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+      </ul>
+      <ul class="mobile-menu__calls">
+        {addresses.map((a) => (
+          <li>
+            <a href={`tel:${a.phone.tel}`}><span class="mobile-menu__addr">{a.street}</span><span class="price">{a.phone.label}</span></a>
+          </li>
+        ))}
+      </ul>
+      <p class="muted">{hoursShort}</p>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 50; background: var(--color-bg); border-bottom: 1px solid var(--color-tint); }
+  .site-header__bar { display: flex; align-items: center; gap: var(--s-3); min-height: var(--header-h); }
+  .site-header__logo { display: inline-flex; align-items: center; min-height: var(--tap); flex: none; }
+  .site-header__logo :global(img) { width: 132px; height: auto; }
+  .site-nav { display: none; }
+  .site-nav ul { display: flex; gap: var(--s-1); }
+  .site-nav a, .mobile-menu__nav a { display: inline-flex; align-items: center; min-height: var(--tap); padding-inline: .6rem; font-weight: 600; text-decoration: none; border-radius: var(--radius); transition: background-color var(--dur-fast) var(--ease-out); }
+  .site-nav a:hover { background: var(--color-calm); }
+  .site-header__actions { margin-left: auto; display: flex; align-items: center; gap: var(--s-1); }
+  .site-header__tel { display: none; font-weight: 700; text-decoration: none; padding-inline: .5rem; min-height: var(--tap); align-items: center; }
+  .site-header__tel:hover { color: var(--color-link); text-decoration: underline; }
+  .site-header :global(.site-header__cta) { display: none; min-height: 44px; }
+  .icon-btn { display: inline-grid; place-items: center; width: var(--tap); height: var(--tap); border-radius: var(--radius-pill); border: 2px solid var(--color-text); background: var(--color-bg); color: var(--color-text); cursor: pointer; padding: 0; transition: background-color var(--dur-fast) var(--ease-out); }
+  .icon-btn:hover { background: var(--color-calm); }
+  .icon-btn--solid { background: var(--color-action); border-color: var(--color-action); color: var(--color-on-action); }
+  .icon-btn--solid:hover { background: var(--color-action-hover); }
+  .icon-btn--solid:focus-visible { box-shadow: inset 0 0 0 2px var(--color-on-action); }
+  .site-header__burger { display: none; }
+  :global(.js) .site-header__burger { display: inline-grid; }
+  .burger { display: grid; gap: 4px; width: 18px; }
+  .burger span { display: block; height: 2px; background: currentColor; border-radius: 2px; transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out); }
+  .site-header__burger[aria-expanded="true"] .burger span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .site-header__burger[aria-expanded="true"] .burger span:nth-child(2) { opacity: 0; }
+  .site-header__burger[aria-expanded="true"] .burger span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+  .mobile-menu { border-top: 1px solid var(--color-tint); background: var(--color-bg); padding-block: var(--s-2) var(--s-3); max-height: calc(100svh - var(--header-h)); overflow-y: auto; }
+  .mobile-menu__nav a { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-2); padding-inline: 0; width: 100%; }
+  .mobile-menu__calls { margin-block: var(--s-2); display: grid; gap: var(--s-1); }
+  .mobile-menu__calls a { display: grid; padding: .75rem 1rem; border-radius: var(--radius); background: var(--color-calm); text-decoration: none; font-weight: 700; }
+  .mobile-menu__addr { font-weight: 400; font-size: var(--fs-0); }
+  @media (min-width: 64rem) {
+    .site-header__logo :global(img) { width: 150px; }
+    .site-nav { display: block; margin-left: var(--s-3); }
+
+    .site-header :global(.site-header__cta) { display: inline-flex; }
+    .site-header__tel-icon, :global(.js) .site-header__burger { display: none; }
+    .mobile-menu { display: none; }
+  }
+  @media (min-width: 80rem) { .site-header__tel { display: inline-flex; } }
+  @media (max-width: 22rem) { .site-header__logo :global(img) { width: 112px; } }
+</style>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>(".site-header__burger");
+  const menu = document.getElementById("mobile-menu");
+  if (btn && menu) {
+    const set = (open: boolean) => {
+      btn.setAttribute("aria-expanded", String(open));
+      btn.setAttribute("aria-label", open ? "Закрити меню" : "Меню");
+      menu.hidden = !open;
+    };
+    btn.addEventListener("click", () => set(btn.getAttribute("aria-expanded") !== "true"));
+    menu.addEventListener("click", (e) => { if ((e.target as HTMLElement).closest("a")) set(false); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && btn.getAttribute("aria-expanded") === "true") { set(false); btn.focus(); }
+    });
+    window.matchMedia("(min-width: 64rem)").addEventListener("change", (m) => { if (m.matches) set(false); });
+  }
+</script>

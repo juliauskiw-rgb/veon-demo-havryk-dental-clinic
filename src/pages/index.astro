@@ -1,0 +1,379 @@
+---
+import { Image, Picture } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import Section from "../components/Section.astro";
+import Header from "../components/Header.astro";
+import CallButton from "../components/CallButton.astro";
+import FutureLink from "../components/FutureLink.astro";
+import Footer from "../components/Footer.astro";
+import MobileBar from "../components/MobileBar.astro";
+import foundersImg from "../assets/founders-cut.webp";
+import teamGroupImg from "../assets/team-group.png";
+import { phoneMain, phoneKalyny, addresses, hoursShort, hours, email, needs, kidsTeam, founders, team, firstSteps, priceList, socials } from "../data/clinic";
+
+const site = "Havryk Dental Clinic";
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Dentist",
+  name: site,
+  email,
+  telephone: phoneMain.tel,
+  sameAs: socials.map((s) => s.url),
+  department: addresses.map((a) => ({
+    "@type": "Dentist",
+    name: `${site}, ${a.street}`,
+    telephone: a.phone.tel,
+    address: { "@type": "PostalAddress", streetAddress: a.detail ? `${a.street}, ${a.detail}` : a.street, addressLocality: "Львів", addressCountry: "UA" },
+    openingHours: ["Mo-Fr 09:00-21:00", "Sa 09:00-16:00"],
+  })),
+};
+
+const title = "Стоматологія на Сихові, Львів — Havryk Dental Clinic";
+const description = "Сімейна стоматологія повного циклу на Сихові: дві адреси, дитяча стоматологія і лікування в медикаментозному сні, консультація 800 грн. Тел. +38 (097) 630-30-70.";
+---
+<Base lang="uk" title={title} description={description}>
+  <script slot="head" type="application/ld+json" data-rec="SEO-R05" set:html={JSON.stringify(jsonLd)} />
+  <Header slot="header" />
+
+  <Section id="hero" rec="R-001" class="hero">
+    <div class="container hero__grid">
+      <h1 class="hero__title" data-rec="SEO-R02">Родинна стоматологія Марти й Олеся Гаврик на Сихові</h1>
+      <div class="hero__body">
+        <ul class="hero__facts">
+          <li>2 адреси на Сихові</li>
+          <li>{hoursShort}</li>
+        </ul>
+        <div class="hero__actions">
+          <CallButton phone={phoneMain} class="hero__cta" rec="R-001">Подзвонити</CallButton>
+          <a class="btn btn--quiet" href="#contacts">Обрати адресу</a>
+        </div>
+        <ul class="hero__plates" data-rec="R-007">
+          {addresses.map((a) => (
+            <li class="plate">
+              <span class="plate__street">{a.street}{a.detail && <span>, {a.detail}</span>}</span>
+              <a class="plate__tel price" href={`tel:${a.phone.tel}`}>{a.phone.label}</a>
+              {a.phoneNote && <span class="plate__note">{a.phoneNote}</span>}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="hero__photo">
+        <Picture
+          src={foundersImg}
+          formats={["avif", "webp"]}
+          fallbackFormat="webp"
+          widths={[360, 560, 760, 929]}
+          sizes="(min-width: 64rem) 560px, 90vw"
+          alt="Марта й Олесь Гаврик, лікарі-засновники клініки, у чорній формі"
+          loading="eager"
+          fetchpriority="high"
+          data-rec="R-011,R-013"
+        />
+      </div>
+    </div>
+  </Section>
+
+  <Section id="services" rec="R-003,SEO-R07" class="section">
+    <div class="container">
+      <div class="section__head">
+        <h2><span class="q" data-reveal>З чим ви прийшли?</span><span class="h2-sub">Послуги стоматології повного циклу і ціни з прайсу клініки</span></h2>
+      </div>
+      <ul class="needs">
+        {needs.map((n) => (
+          <li class:list={["need", `need--${n.size}`, { "need--kids": n.kids }]}>
+            <h3 class="need__phrase">{n.phrase}</h3>
+            <p class="need__text">{n.text}</p>
+            <p class="need__price"><span class="price">{n.price}</span><span class="need__note">{n.priceNote}</span></p>
+            {n.kids ? (
+              <a class="need__link" href="#kids">Як ми лікуємо дітей<svg class="arrow" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            ) : (
+              <FutureLink note="Розділ у розробці" class="need__more">Детальніше<svg class="arrow" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></FutureLink>
+            )}
+          </li>
+        ))}
+      </ul>
+      <p class="needs__help">Не знаєте, що обрати? <a href={`tel:${phoneMain.tel}`}>Подзвоніть <span class="price">{phoneMain.label}</span></a>, і ми підкажемо, з чого почати.</p>
+    </div>
+  </Section>
+
+  <Section id="kids" rec="R-004" class="section kids">
+    <div class="container kids__grid">
+      <div class="kids__text">
+        <h2><span class="q" data-reveal>Дитина боїться стоматолога?</span><span class="h2-sub">Дитяча стоматологія і лікування в медикаментозному сні</span></h2>
+        <p class="lead">Дітей лікує головний дитячий стоматолог клініки Марта Гаврик разом з Анною Пламадялою. Якщо потрібен медикаментозний сон, поруч анестезіолог Володимир Сірий.</p>
+        <p class="kids__price"><span class="kids__num price">800 грн</span><span>дитяча консультація</span></p>
+        <p>Окремо є стоматологія для вагітних.</p>
+        <CallButton phone={phoneMain} rec="R-004">Записати дитину</CallButton>
+      </div>
+      <ul class="kids__people">
+        {kidsTeam.map((p) => (
+          <li class="person-cut">
+            <Image src={p.img} alt={`${p.name}, ${p.role.toLowerCase()}`} widths={[240, 360, 480]} sizes="(min-width: 64rem) 220px, 30vw" class="person-cut__img" data-rec="R-013" />
+            <span class="person-cut__name">{p.name}</span>
+            <span class="person-cut__role">{p.role}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </Section>
+
+  <Section id="approach" class="section approach">
+    <div class="container approach__grid">
+      <div class="approach__text">
+        <h2><span class="q" data-reveal>А це не боляче?</span><span class="h2-sub">Як ми лікуємо: комфорт і точність</span></h2>
+        <p class="manifesto">Зуби й канали лікуємо <strong>під мікроскопом</strong>. Для дітей і дорослих є <strong>лікування в медикаментозному сні</strong> з анестезіологом. Коронки й вкладки плануємо за <strong>цифровим скануванням 3Shape</strong>. А інструменти проходять <strong>стерилізацію на кожному етапі</strong>.</p>
+      </div>
+      <figure class="approach__photo">
+        <Image src={teamGroupImg} alt="П’ятеро лікарів клініки Havryk у чорній формі" widths={[480, 720, 960, 1440]} sizes="(min-width: 64rem) 600px, 92vw" data-rec="R-013" />
+        <figcaption>Команда клініки</figcaption>
+      </figure>
+    </div>
+  </Section>
+
+  <Section id="team" rec="R-006" class="section">
+    <div class="container team__top">
+      <div class="section__head team__head">
+        <h2><span class="q" data-reveal>Хто мене лікуватиме?</span><span class="h2-sub">Лікарі стоматології Havryk: уся команда з 11 людей</span></h2>
+      </div>
+      <ul class="founders">
+        {founders.map((p) => (
+          <li class="founder">
+            <div class="founder__frame"><Image src={p.img} alt={p.name} widths={[320, 480, 640, 768]} sizes="(min-width: 64rem) 380px, (min-width: 48rem) 45vw, 92vw" class="founder__img" data-rec="R-013" /></div>
+            <h3 class="founder__name">{p.name}</h3>
+            <p class="founder__role">{p.role}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="container">
+      <ul class="team-list">
+        {team.map((p) => (
+          <li class="member">
+            <Image src={p.img} alt={p.name} widths={[96, 192]} sizes="80px" class="member__img" data-rec="R-013" />
+            <span><span class="member__name">{p.name}</span><span class="member__role">{p.role}</span></span>
+          </li>
+        ))}
+      </ul>
+      <p class="team__more"><FutureLink note="Розділ у розробці">Уся команда</FutureLink></p>
+    </div>
+  </Section>
+
+  <Section id="prices" rec="R-005" class="section prices">
+    <div class="container">
+      <div class="section__head">
+        <h2><span class="q" data-reveal>Скільки це коштуватиме?</span><span class="h2-sub">Ціни на стоматологію: з чого почати</span></h2>
+      </div>
+      <div class="prices__grid">
+        <ul class="steps">
+          {firstSteps.map((s) => (
+            <li class="step"><span class="step__num price">{s.price}</span><span class="step__what">{s.what}</span></li>
+          ))}
+        </ul>
+        <div class="prices__list">
+          <h3 class="prices__h">Орієнтири з прайсу</h3>
+          <ul class="price-rows">
+            {priceList.map((r) => (
+              <li class="price-row"><span>{r.what}</span><span class="price price-row__val">{r.price}</span></li>
+            ))}
+          </ul>
+          <p class="prices__note">Остаточну вартість визначає лікар після консультації.</p>
+          <div class="prices__actions">
+            <CallButton phone={phoneMain} showNumber={false} rec="R-005">Записатися на консультацію</CallButton>
+            <FutureLink note="Розділ у розробці">Весь прайс</FutureLink>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <Section id="contacts" rec="R-007" class="section contacts">
+    <div class="container">
+      <div class="section__head">
+        <h2><span class="q" data-reveal>Де ви і коли відчинено?</span><span class="h2-sub contacts__sub">Дві адреси стоматології на Сихові, Львів</span></h2>
+      </div>
+      <ul class="places">
+        {addresses.map((a) => (
+          <li class="place">
+            <h3 class="place__street">{a.street}</h3>
+            <p class="place__city">{a.detail ? `${a.detail}, Львів, Сихів` : "Львів, Сихів"}</p>
+            <div class="place__actions">
+              <CallButton phone={a.phone}>Подзвонити</CallButton>
+              <a class="btn btn--quiet" href={a.map} target="_blank" rel="noopener">Прокласти маршрут</a>
+            </div>
+            {a.phoneNote && <p class="place__note">{a.phoneNote[0].toUpperCase() + a.phoneNote.slice(1)}.</p>}
+          </li>
+        ))}
+      </ul>
+      <div class="contacts__meta">
+        <dl class="hours">
+          {hours.map((h) => (<div><dt>{h.days}</dt><dd class="price">{h.time}</dd></div>))}
+        </dl>
+        <p class="contacts__mail">Пишіть: <a href={`mailto:${email}`}>{email}</a></p>
+      </div>
+    </div>
+  </Section>
+
+  <Footer slot="footer" />
+  <MobileBar slot="footer" />
+</Base>
+
+<style>
+  :global(.hero) { background: var(--color-field); color: var(--color-text); overflow: clip; }
+  .hero__grid { display: grid; grid-template-columns: minmax(0, 1fr); padding-top: var(--s-3); }
+  .hero__title { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-4); line-height: var(--lh-display); letter-spacing: -.015em; max-width: 17ch; }
+  .hero__body { display: grid; gap: var(--s-2); margin-top: var(--s-3); }
+  .hero__facts { display: flex; flex-wrap: wrap; gap: .25rem var(--s-3); font-weight: 700; font-size: var(--fs-1); }
+  .hero__actions { display: grid; gap: var(--s-1); justify-items: start; }
+  .hero__actions :global(.hero__cta) { width: 100%; }
+  .hero__plates { display: grid; gap: var(--s-1); margin-top: var(--s-1); }
+  .plate { display: grid; gap: .1rem; padding: .75rem 1rem; border-radius: var(--radius); background: var(--color-bg); font-size: var(--fs-0); }
+  .plate__street { font-weight: 600; }
+  .plate__tel { display: inline-flex; align-items: center; min-height: var(--tap); width: fit-content; font-weight: 700; color: var(--color-link); text-decoration: underline 1px; text-underline-offset: .25em; }
+  .plate__tel:hover { color: var(--color-text); }
+  .hero__photo { margin-top: var(--s-3); display: flex; justify-content: center; height: min(40svh, 340px); overflow: hidden; }
+  .hero__photo :global(img) { width: min(100%, 26rem); height: auto; align-self: flex-start; }
+  /* motion #1: the founders step forward; H1 and CTA are visible at once */
+  .hero__photo :global(img) { animation: hero-rise 500ms var(--ease-out) both; }
+  @keyframes hero-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+  @media (min-width: 48rem) {
+    .hero__actions { grid-auto-flow: column; justify-content: start; align-items: center; gap: var(--s-3); }
+    .hero__actions :global(.hero__cta) { width: auto; }
+    .hero__plates { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 40rem; }
+  }
+  @media (min-width: 64rem) {
+    .hero__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: auto 1fr; column-gap: var(--s-3); padding-top: var(--s-5); min-height: clamp(640px, calc(100svh - var(--header-h)), 780px); }
+    .hero__title { grid-column: 1 / -1; grid-row: 1; max-width: 18ch; position: relative; z-index: 1; }
+    .hero__body { grid-column: 1 / 6; grid-row: 2; margin-top: var(--s-4); padding-bottom: var(--s-5); align-self: end; }
+    .hero__plates { grid-template-columns: minmax(0, 1fr); max-width: 24rem; }
+    .hero__actions { grid-auto-flow: row; justify-items: start; gap: var(--s-1); }
+    /* the founders stand on the bottom edge and step over the last H1 lines */
+    .hero__photo { grid-column: 6 / -1; grid-row: 1 / -1; position: relative; z-index: 2; margin-top: calc(var(--fs-4) * var(--lh-display)); height: auto; overflow: visible; }
+    .hero__photo :global(img) { position: absolute; left: 0; bottom: 0; height: 100%; width: 100%; max-width: none; object-fit: contain; object-position: left bottom; }
+    .hero__photo :global(img) { animation-duration: 700ms; animation-name: hero-rise-lg; }
+    @keyframes hero-rise-lg { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+  }
+  @media (min-width: 64rem) and (max-width: 79.99rem) {
+    .hero__photo { grid-column: 7 / -1; }
+  }
+  @media (min-width: 64rem) {
+    .team__top { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--s-3); align-items: end; }
+    .team__head { grid-column: 1 / 5; margin-bottom: 0; align-self: start; }
+    .founders { grid-column: 5 / -1; }
+  }
+  @media (prefers-reduced-motion: reduce) { .hero__photo :global(img) { animation: none; } }
+  .plate__note { font-size: .875rem; color: var(--color-muted); }
+
+  /* services: unequal request tiles (motion #3 on hover/focus) */
+  .needs { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-2); }
+  .need { position: relative; display: flex; flex-direction: column; gap: var(--s-1); padding: var(--s-3); border-radius: var(--radius-tile); background: var(--color-bg); box-shadow: inset 0 0 0 1px var(--color-line); transition: background-color var(--dur-fast) var(--ease-out), transform 150ms var(--ease-out); }
+  .need:hover, .need:focus-within { background: var(--color-calm); box-shadow: none; }
+  .need--kids { background: var(--color-kids); box-shadow: none; }
+  .need--kids:hover, .need--kids:focus-within { background: var(--color-calm); }
+  .need:active { transform: scale(.98); }
+  .need__phrase { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-2); line-height: var(--lh-display); }
+  .need--lg .need__phrase { font-size: var(--fs-3); }
+  .need__text { color: var(--color-muted); max-width: 34ch; }
+  .need__price { margin-top: auto; padding-top: var(--s-2); display: grid; }
+  .need__price .price { font-weight: 700; font-size: var(--fs-1); }
+  .need__note { font-size: .9375rem; color: var(--color-muted); }
+  .need__link { display: inline-flex; align-items: center; gap: .5rem; min-height: var(--tap); font-weight: 700; color: var(--color-text); text-underline-offset: .3em; }
+  .need__link::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+  .need .arrow { transition: transform var(--dur-fast) var(--ease-out); }
+  .need:hover .arrow, .need:focus-within .arrow { transform: translateX(4px); }
+  .need :global(.need__more) { align-self: flex-start; }
+  .needs__help { margin-top: var(--s-4); font-size: var(--fs-1); max-width: 46rem; }
+  .needs__help a { font-weight: 700; color: var(--color-link); text-underline-offset: .25em; }
+  .needs__help a:hover { color: var(--color-text); }
+
+  /* kids: the warmest screen */
+  :global(.kids) { background: var(--color-kids); }
+  .kids__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
+  .kids__text { display: grid; gap: var(--s-3); justify-items: start; align-content: start; }
+  .kids__price { display: grid; }
+  .kids__num { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-4); line-height: 1; }
+  .kids__people { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-2); align-self: end; }
+  .person-cut { display: grid; gap: .15rem; align-content: start; }
+  .person-cut :global(.person-cut__img) { width: 100%; height: auto; aspect-ratio: 1 / 1.05; object-fit: cover; object-position: 50% 0; margin-bottom: var(--s-1); }
+  .person-cut__name { font-weight: 700; line-height: 1.3; }
+  .person-cut__role { font-size: .9375rem; color: var(--color-muted); line-height: 1.35; }
+
+  /* approach */
+  :global(.approach) { background: var(--color-calm); }
+  .approach__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-4); align-items: center; }
+  .manifesto { margin-top: var(--s-3); font-size: var(--fs-1); line-height: 1.6; max-width: 36rem; }
+  .manifesto strong { font-weight: 700; color: var(--color-text); background: var(--color-bg); padding: 0 .2em; border-radius: 4px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .approach__photo { margin: 0; }
+  .approach__photo :global(img) { width: 100%; height: auto; }
+  .approach__photo figcaption { margin-top: var(--s-1); font-size: .9375rem; color: var(--color-muted); }
+
+  /* team */
+  .founders { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
+  .founder__frame { max-width: 26rem; aspect-ratio: 1 / 1; overflow: clip; }
+  .founder :global(.founder__img) { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; transform: scale(1.12); transform-origin: 50% 8%; }
+  .founder:first-child :global(.founder__img) { transform: scale(1.3); transform-origin: 58% 4%; }
+  .founder__name { margin-top: var(--s-2); font-family: var(--font-display); font-weight: 800; font-size: var(--fs-3); line-height: var(--lh-display); }
+  .founder__role { margin-top: var(--s-1); color: var(--color-muted); max-width: 30ch; }
+  .team-list { margin-top: var(--s-5); display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-2) var(--s-3); border-top: 1px solid var(--color-tint); padding-top: var(--s-4); }
+  .member { display: flex; align-items: center; gap: var(--s-2); }
+  .member :global(.member__img) { width: 72px; height: 72px; flex: none; border-radius: 50%; object-fit: cover; object-position: 50% 12%; background: var(--color-calm); }
+  .member__name { display: block; font-weight: 700; }
+  .member__role { display: block; color: var(--color-muted); font-size: .9375rem; }
+  .team__more { margin-top: var(--s-4); }
+
+  /* prices */
+  .prices__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
+  .steps { display: grid; gap: var(--s-4); align-content: start; }
+  .step { display: grid; gap: var(--s-1); padding-bottom: var(--s-4); border-bottom: 2px solid var(--color-line); }
+  .step__num { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-4); line-height: 1; }
+  .step__what { font-size: var(--fs-1); font-weight: 600; max-width: 24ch; }
+  .prices__h { font-family: var(--font-body); font-size: var(--fs-1); font-weight: 700; margin-bottom: var(--s-2); }
+  .price-rows { display: grid; }
+  .price-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .25rem var(--s-3); padding-block: .875rem; border-bottom: 1px solid var(--color-tint); }
+  .price-row__val { font-weight: 700; }
+  .prices__note { margin-top: var(--s-3); font-size: var(--fs-1); font-weight: 600; }
+  .prices__actions { margin-top: var(--s-4); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); }
+
+  /* contacts: the page ends on the same field it starts with */
+  :global(.contacts) { background: var(--color-field); }
+  .contacts__sub { color: var(--color-text); }
+  .places { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
+  .place { display: grid; gap: var(--s-2); align-content: start; padding-top: var(--s-3); border-top: 2px solid var(--color-line); }
+  .place__street { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-3); line-height: var(--lh-display); }
+  .place__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); margin-top: var(--s-1); }
+  .place__note { font-weight: 600; }
+  .contacts__meta { margin-top: var(--s-5); display: grid; gap: var(--s-3); }
+  .hours { margin: 0; display: grid; gap: .25rem; max-width: 26rem; }
+  .hours div { display: flex; justify-content: space-between; gap: var(--s-3); padding-block: .5rem; border-bottom: 1px solid var(--color-line); }
+  .hours dt { font-weight: 600; }
+  .hours dd { margin: 0; font-weight: 700; }
+  .contacts__mail a { display: inline-flex; align-items: center; min-height: var(--tap); font-weight: 700; text-underline-offset: .25em; }
+  .contacts__mail a:hover { text-decoration-thickness: 3px; }
+
+  @media (min-width: 48rem) {
+    .needs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .founders { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .team-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .places { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .contacts__meta { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: end; }
+  }
+  @media (min-width: 64rem) {
+    .needs { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+    .need--lg { grid-column: span 6; min-height: 20rem; padding: var(--s-4); }
+    .need--md { grid-column: span 3; min-height: 18rem; }
+    .kids__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--s-3); }
+    .kids__text { grid-column: 1 / 7; }
+    .kids__people { grid-column: 7 / -1; }
+    .approach__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--s-3); }
+    .approach__text { grid-column: 1 / 7; }
+    .approach__photo { grid-column: 7 / -1; }
+    .team-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .prices__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--s-3); }
+    .steps { grid-column: 1 / 6; }
+    .prices__list { grid-column: 7 / -1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .need:active { transform: none; }
+    .need:hover .arrow, .need:focus-within .arrow { transform: none; }
+  }
+</style>

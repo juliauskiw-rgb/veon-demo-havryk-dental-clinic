@@ -1,0 +1,65 @@
+---
+// White compact footer: logo → #hero, contacts, addresses, future pages, confirmed socials, licences, clinic line.
+import { Image } from "astro:assets";
+import logo from "../assets/logo-dark.png";
+import FutureLink from "./FutureLink.astro";
+import { phoneMain, phoneKalyny, email, addresses, socials, licences, hoursShort } from "../data/clinic";
+const future = ["Про клініку", "Відгуки", "Фото та відео", "Сертифікати та нагороди", "Часті питання", "Поради пацієнтам", "Політика конфіденційності", "Договір оферти"];
+---
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div>
+        <a class="site-footer__logo" href="#hero" aria-label="Havryk Dental Clinic, на початок сторінки">
+          <Image src={logo} alt="Havryk Dental Clinic" width={150} height={32} />
+        </a>
+        <ul class="site-footer__list">
+          <li><a class="price" href={`tel:${phoneMain.tel}`}>{phoneMain.label}</a></li>
+          <li><a class="price" href={`tel:${phoneKalyny.tel}`}>{phoneKalyny.label}</a></li>
+          <li><a href={`mailto:${email}`}>{email}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="site-footer__h">Адреси</h2>
+        <ul class="site-footer__list">
+          {addresses.map((a) => <li>Львів, {a.street}{a.detail && `, ${a.detail}`}</li>)}
+          <li class="muted">{hoursShort}</li>
+        </ul>
+        <h2 class="site-footer__h">Соцмережі</h2>
+        <ul class="site-footer__social">
+          {socials.map((s) => <li><a href={s.url} rel="noopener" target="_blank">{s.name}</a></li>)}
+        </ul>
+      </div>
+      <div>
+        <h2 class="site-footer__h">Розділи</h2>
+        <ul class="site-footer__future">
+          {future.map((f) => <li><FutureLink note="Розділ у розробці">{f}</FutureLink></li>)}
+        </ul>
+      </div>
+    </div>
+    <div class="site-footer__bottom">
+      <p class="muted">{licences}</p>
+      <p>Havryk Dental Clinic · Усміхайся. Тобі пасує</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer { padding-block: var(--s-5) var(--s-4); border-top: 1px solid var(--color-tint); font-size: var(--fs-0); }
+  .site-footer__grid { display: grid; gap: var(--s-4); }
+  .site-footer__logo { display: inline-flex; min-height: var(--tap); align-items: center; margin-bottom: var(--s-2); }
+  .site-footer__logo :global(img) { width: 150px; height: auto; }
+  .site-footer__h { font-family: var(--font-body); font-size: var(--fs-0); font-weight: 700; margin: 0 0 var(--s-1); }
+  .site-footer__h:not(:first-child) { margin-top: var(--s-3); }
+  .site-footer__list { display: grid; gap: .25rem; }
+  .site-footer__list a, .site-footer__social a { display: inline-flex; align-items: center; min-height: var(--tap); font-weight: 600; text-decoration: underline 1px; text-underline-offset: .25em; }
+  .site-footer__list a:hover, .site-footer__social a:hover { color: var(--color-link); }
+  .site-footer__social { display: flex; flex-wrap: wrap; column-gap: var(--s-3); }
+  .site-footer__future { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr)); column-gap: var(--s-3); }
+  .site-footer__bottom { margin-top: var(--s-5); padding-top: var(--s-3); border-top: 1px solid var(--color-tint); display: grid; gap: var(--s-1); }
+  @media (min-width: 48rem) {
+    .site-footer__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .site-footer__bottom { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
+  }
+  @media (min-width: 64rem) { .site-footer__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.2fr); } }
+</style>

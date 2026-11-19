@@ -1,0 +1,11 @@
+---
+// Primary action: a real phone call (tel:). One per block.
+import PhoneIcon from "./PhoneIcon.astro";
+import type { Phone } from "../data/clinic";
+interface Props { phone: Phone; class?: string; rec?: string; showNumber?: boolean; }
+const { phone, class: cls, rec, showNumber = true } = Astro.props;
+---
+<a class:list={["btn btn--primary", cls]} href={`tel:${phone.tel}`} data-rec={rec}>
+  <PhoneIcon />
+  <span><slot />{showNumber && <span class="price"> {phone.label}</span>}</span>
+</a>
